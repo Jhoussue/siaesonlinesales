@@ -1,0 +1,87 @@
+<br>
+<br>
+<br>
+
+
+  <br>
+  <br>
+  <div class="container" [style]="{width: '100%', margin: '0 auto'} ">
+   
+    <div class="row">
+     
+      <div class="col-3 text-center" *ngIf="iddepart!==0">
+        <label *ngIf="marca.length>1">Marca</label>
+        <select class="custom-select" *ngIf="marca.length>1" [size]="marca.length" name="marcaelegida" id="marca" [(ngModel)]="marca2" (change)="cargarmars()">
+          <option [ngValue]="mar" *ngFor="let mar of marca">{{mar.nombre}}</option>
+        </select>       
+        <label *ngIf="productomo.length>1">Modelos</label>
+        <select class="custom-select" *ngIf="productomo.length>1" [size]="productomo.length" name="marcaelegida" id="mode" [(ngModel)]="productomo2" (change)="cargarmars()">
+          <option [ngValue]="modelo" *ngFor="let modelo of productomo">{{modelo.modelo}}</option>
+        </select>
+        <label *ngIf="productoco.length>1" >Colores</label>
+        <select class="custom-select" *ngIf="productoco.length>1" [size]="productoco.length" name="marcaelegida" id="colr" [(ngModel)]="productoco2" (change)="cargarmars()">
+          <option [ngValue]="color" *ngFor="let color of productoco">{{color.color}}</option>
+        </select> 
+        <label *ngIf="productota.length>1">Tallas</label>
+        <select class="custom-select" *ngIf="productota.length>1" [size]="productota.length" name="talla" id="tallas" [(ngModel)]="productota2" (change)="cargarmars()">
+          <option [ngValue]="tall" *ngFor="let tall of productota">{{tall.talla}}</option>
+        </select>
+        <label *ngIf="minimo!==maximo" >Precios</label>
+        <ng5-slider *ngIf="minimo!==maximo" style="background-color: rgb(105, 39, 39);" [(value)]="minimo" [(highValue)]="maximo" [options]="options" (valueChange)="cargarmars()"></ng5-slider>
+        <button type="button" class="btn btn-danger" (click)="cargaropcion(iddepart)"><i class="far fa-trash-alt"></i> Limpiar</button>
+      </div>
+      <div class="col-9" *ngIf="iddepart!=0">
+
+        <div class="row">
+    
+          <ul *ngFor="let producto of producto">
+              <div class="col-sm-2" style="text-align: center;" >
+              <div class="card border-bottom" style="width: 12rem;">
+                  {{this.cargarimagen(producto.imagenes)}}
+          
+                  <img [src]="imagenn" height="140" width="160" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">{{producto.nombre}}</h5>
+                    <p class="card-text">{{producto.modelo}}, {{producto.color}}</p>
+                    <p class="card-text">${{producto.precio}}</p>
+                   
+                    <button type="button" class="btn btn-outline-success btn-block">
+                      <i class="fas fa-shopping-cart"></i> Comprar
+                    </button>
+                  </div>
+                  </div>
+                </div>
+          </ul>
+  
+          </div>
+       
+      </div>
+      <div class="col-12" *ngIf="iddepart===0">
+
+        <div class="row">
+    
+          <ul *ngFor="let producto of producto">
+              <div class="col-sm-2" style="text-align: center;" >
+              <div class="card border-bottom" style="width: 12rem;">
+                  {{this.cargarimagen(producto.imagenes)}}
+          
+                  <img [src]="imagenn" height="140" width="160" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">{{producto.nombre}}</h5>
+                    <p class="card-text">{{producto.modelo}}, {{producto.color}}</p>
+                    <p class="card-text" >${{producto.precio}}</p>
+                   
+                    <button type="button" class="btn btn-outline-success btn-block">
+                      <i class="fas fa-shopping-cart"></i> Comprar
+                    </button>
+                  </div>
+                  </div>
+                </div>
+          </ul>
+  
+          </div>
+       
+      </div>
+    </div>
+  </div>
+{{id}}
