@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Producto } from 'src/model/producto';
 import { ProductoService } from 'src/app/service/producto.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -7,7 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Marca } from 'src/model/marca';
 import { Options } from 'ng5-slider';
 import { Subscription } from 'rxjs';
-
+import { MenuComponent } from '../menu/menu.component';
+import { CarritoService } from '../service/carrito.service';
 @Component({
   selector: 'app-producto',
   templateUrl: './producto.component.html',
@@ -22,8 +23,10 @@ export class ProductoComponent implements OnInit {
     private personaService: ProductoService,
     private sanitizer: DomSanitizer,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private carritoServicio: CarritoService
   ) {
+    // tslint:disable-next-line: only-arrow-functions
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -40,48 +43,68 @@ export class ProductoComponent implements OnInit {
   visibleSidebar1 = this.personaService.visible;
   imagenn: SafeUrl;
   imagenn2: SafeUrl;
-  producto: Producto[];
-  productose: Producto[];
-  productose2: Producto[];
-  productoco: Producto[];
+  producto: Producto[]=[];
+  carrito: Producto[]=[];
+  carrito2: Producto;
+  productoss: Producto[]=[];
+  productose: Producto[]=[];
+  productose2: Producto;
+  productoco: Producto[]=[];
   productoco2: Producto;
-  productomo: Producto[];
+  productomo: Producto[]=[];
   productomo2: Producto;
-  productota: Producto[];
+  productota: Producto[]=[];
   productota2: Producto;
   valprecio: number;
-  departamento: Departamento[];
-  marca: Marca[];
+  departamento: Departamento[]=[];
+  marca: Marca[]=[];
   marca2: any = null;
   n: string[] = [];
-  iddepart: number = 0;
+  iddepart: number;
   rangeValues: number[] = [];
-  max: number = 0;
-  min: number = 0;
+  max: number;
+  min: number;
   maxmin: number[] = [];
   mar: number;
   mo: string[] = [];
   mod: string;
   color: string;
   talla: string;
-  minimo: number = 40;
-  maximo: number = 60;
+  minimo: number;
+  maximo: number;
   id;
+  nombre;
+  variable = 'holaaa';
+  sexo: string;
   options: Options = {
     floor: 0,
     ceil: 1000,
   };
-  iddd: number = 0;
+  iddd: number;
+  nombress: string;
+  iddepartamento: number;
+  nombremarca: string;
+  marcacod: Marca[]=[];
+  vf;
+  p: number=1;
+  @ViewChild(MenuComponent) hijo: MenuComponent;
   ngOnInit(): void {
+    this.cargarmarcacod();
     this.cargardepartamento();
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.iddd = +this.id;
 
-    this.cargaropcion(this.iddd);
-    this.suscripcion = this.personaService.refresh$.subscribe(() => {
+    if (this.iddd / this.iddd !== 1 && this.iddd !== 0) {
+      this.vf = true;
+      this.productonombre(this.id);
+    } else {
+      this.id = '.';
+      this.vf = false;
       this.cargaropcion(this.iddd);
-    });
+    }
+    
   }
+
   cargaropcion(idde: number): void {
     this.iddepart = idde;
     this.cargarproducto(idde);
@@ -89,10 +112,11 @@ export class ProductoComponent implements OnInit {
     this.vi = false;
     this.visibleSidebar1 = false;
     this.mar = 0;
-    this.marca2.idmarca = 0;
+  
     delete this.productomo2;
     delete this.productoco2;
     delete this.productota2;
+    delete this.productose2;
     this.rangeValues = [];
     this.maxmin = [];
     this.mo = [];
@@ -101,21 +125,21 @@ export class ProductoComponent implements OnInit {
     this.personaService.detail(idt, 0).subscribe(
       (data) => {
         this.producto = data;
-        this.maxmin = [];
-        this.max = 0;
-        this.min = 0;
-        this.rangeValues = [];
-        for (const pro of this.producto) {
-          if (pro.precio > this.max) {
-            this.max = 0;
-            this.max = pro.precio;
-          }
 
-          if (pro.precio <= this.max) {
-            this.min = 0;
-            this.min = pro.precio;
-          }
+        this.max = 1;
+        this.min = 1100;
+        var myArray = [];
+        for (let pro of this.producto) {
+         
+          myArray.push(pro.precio);
+         
+            
+          
         }
+        this.min = Math.min.apply(null,myArray);
+            console.log('precio mini'+this.min);
+            this.max = Math.max.apply(null,myArray);
+            console.log('precio max'+this.max);
         this.minimo = this.min;
         this.maximo = this.max;
         this.options = {
@@ -138,6 +162,7 @@ export class ProductoComponent implements OnInit {
       }
     );
   }
+
   cargardepartamento(): void {
     this.personaService.listadepar().subscribe(
       (data) => {
@@ -155,7 +180,12 @@ export class ProductoComponent implements OnInit {
   }
 
   cargarmarca(idt: number) {
-    this.personaService.listamarca(idt).subscribe(
+    
+    delete this.productomo2;
+    delete this.productoco2;
+    delete this.productota2;
+    delete this.productose2;
+    this.personaService.listamarca(idt, this.id).subscribe(
       (data) => {
         this.marca = data;
       },
@@ -167,6 +197,17 @@ export class ProductoComponent implements OnInit {
     this.cargarcolor(idt);
     this.cargarmodelo(idt);
     this.cargartalla(idt);
+  }
+  cargarmarcacod() {
+    delete this.marcacod;
+    this.personaService.listamarcacod().subscribe(
+      (data) => {
+        this.marcacod = data;
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
   limpiar() {
     this.marca2.idmarca = 0;
@@ -209,6 +250,11 @@ export class ProductoComponent implements OnInit {
     if (this.productota2 != null) {
       this.talla = this.productota2.talla;
     }
+    this.sexo = '.';
+
+    if (this.productose2 != null) {
+      this.sexo = this.productose2.sexo;
+    }
     this.personaService
       .marcass(
         this.mar,
@@ -217,7 +263,9 @@ export class ProductoComponent implements OnInit {
         this.maximo,
         this.mod,
         this.color,
-        this.talla
+        this.talla,
+        this.sexo,
+        this.id
       )
       .subscribe(
         (data) => {
@@ -230,7 +278,7 @@ export class ProductoComponent implements OnInit {
   }
 
   cargarsexo(idt: number) {
-    this.personaService.listasexo(idt).subscribe(
+    this.personaService.listasexo(idt, this.id).subscribe(
       (data) => {
         this.productose = data;
       },
@@ -240,7 +288,7 @@ export class ProductoComponent implements OnInit {
     );
   }
   cargarcolor(idt: number) {
-    this.personaService.listacolor(idt).subscribe(
+    this.personaService.listacolor(idt, this.id).subscribe(
       (data) => {
         this.productoco = data;
       },
@@ -250,7 +298,7 @@ export class ProductoComponent implements OnInit {
     );
   }
   cargarmodelo(idt: number) {
-    this.personaService.listamodelo(idt).subscribe(
+    this.personaService.listamodelo(idt, this.id).subscribe(
       (data) => {
         this.productomo = data;
       },
@@ -260,7 +308,7 @@ export class ProductoComponent implements OnInit {
     );
   }
   cargartalla(idt: number) {
-    this.personaService.listatalla(idt).subscribe(
+    this.personaService.listatalla(idt, this.id).subscribe(
       (data) => {
         this.productota = data;
       },
@@ -268,5 +316,48 @@ export class ProductoComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+  productonombre(nombre: string) {
+    
+    this.personaService.listanombre(nombre).subscribe(
+      (data) => {
+        this.producto = data;
+      
+        this.iddepartamento = this.producto[0].iddept;
+        this.max = 1;
+        this.min = 1100;
+
+        var myArray = [];
+        for (let pro of this.producto) {
+         
+          myArray.push(pro.precio);
+         
+            
+          
+        }
+        this.min = Math.min.apply(null,myArray);
+            console.log('precio mini'+this.min);
+            this.max = Math.max.apply(null,myArray);
+            console.log('precio max'+this.max);
+        this.minimo = this.min;
+        this.maximo = this.max;
+        this.options = {
+          floor: this.minimo - 1,
+          ceil: this.maximo + 1,
+        };
+        this.cargarmarca(this.producto[0].iddept);
+        this.iddepart = this.producto[0].iddept;
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+  rutacodigo(codigo: string) {
+    this.router.navigate(['/detalles', codigo]);
+  }
+  carritocompra(prod: Producto) {
+    console.log('añadir al carrito');
+    this.carritoServicio.addcart(prod);
   }
 }

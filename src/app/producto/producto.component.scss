@@ -1,0 +1,15 @@
+.selectAltura {
+    display:block;
+    height:50px;
+    width:200px;
+  }
+  
+  .selectAltura2 {
+    padding:20px;
+  }
+  .zoom{
+    transition: transform 1s;
+}
+.zoom:hover{
+    transform: scale(1.5);
+}

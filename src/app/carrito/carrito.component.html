@@ -1,0 +1,53 @@
+<br>
+<br>
+<div class="container" [style]="{width: '80%', margin: '5 auto'} ">
+<div class="table-responsive">
+  <div class=table-wrapper>
+<table class="table table-borderless table-earnings table-earnings__challenge" data-spy="scroll" >
+    <thead >
+      <tr>
+        <th scope="col"><i class="far fa-images"></i></th>
+        <th scope="col">Producto</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Accion</th>
+        
+        <th scope="col">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let pro of p | unico ; index as i">
+      <tr>
+        <td class="text-center">{{cargarimagen(pro.imagenes)}}
+          <a (click)="rutacodigo(pro.codproducto)"  routerLink="/detalles">
+            <img [src]="imagenn" height="130" width="100" ></a> </td>
+        <td class="align-middle">{{pro.nombre}}{{pro.codproducto}}</td>
+        <td class="align-middle">{{pro.precio |currency}}</td>
+        <td class="align-middle">{{pro | cantidad}}</td>
+        <td class="align-middle"><button type="button" class="btn btn-outline-danger" routerLink="/carrito/{{refre}}" (click)="deletes(pro)"><i class="fas fa-minus-square"></i></button>
+          <button type="button" class="btn btn-outline-success" routerLink="/carrito/{{refre}}" (click)="addcart(pro)"><i class="fas fa-plus-square"></i></button>
+        </td>
+      
+        <td class="align-middle">{{((pro | cantidad)*pro.precio)| currency}}</td>
+      </tr>
+      
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="6"> </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+</div>
+  <div class="border-light text-center" *ngIf="totalfinal>0">
+    <h4>Total:{{totalfinal |currency}} </h4>
+    <br>
+    <button type="button" class="btn btn-success" routerLink="/cliente" >
+        <i class="far fa-credit-card"></i> Pagar
+    </button>
+</div>
+</div>
+
+<br>
+
+

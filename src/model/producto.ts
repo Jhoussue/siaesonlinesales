@@ -12,11 +12,12 @@ export class Producto {
     imagenes: string;
     porcentaje: number;
     existencia: number;
-
+    iddept: number;
+    idmarca: number;
     constructor(codproducto: string, nombre: string, precio: number, talla: string, color: string,
                 sexo: string, capacidad: string,
                 caracteristicas: string, modelo: string, imagen: string[], imagenes: string, porcentaje: number,
-                existencia: number
+                existencia: number, iddept: number, idmarca: number
     ) {
 
     }

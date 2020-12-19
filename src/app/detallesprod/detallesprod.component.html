@@ -1,0 +1,53 @@
+<br>
+<br>
+<div class="row row-cols-1 row-cols-md-2">
+ 
+    
+
+        <div class="col mb-4">
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <ul *ngFor="let pro of producto">
+          <div class="carousel-item text-center active">
+            {{cargarimagen(pro.imagenes)}}
+              <img [src]="imagenn" class="zoom" height="400" alt="...">
+          </div>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+    <ul *ngFor="let pro of producto">
+
+        <div class="col mb-4">
+            <div class="card border border-light">
+
+                <div class="card-body ">
+                    <h3 class="card-title text-center">{{pro.nombre}}</h3>
+                    <h4 class="card-title ">Precio:{{pro.precio | currency}}</h4>
+                    <h4 class="card-title ">Detalles</h4>
+                    <p class="card-text">{{pro.caracteristicas | slice:0:30}}</p>
+                   
+                    <br>
+                    <h5 class="card-title ">Cantidad</h5>
+                    <br>
+                    
+                    <input type="number" id="formGroupExampleInput" [(ngModel)]="n" min="1" max="{{pro.existencia}}" size="4">
+                    <br>
+                    <h4 class="card-title ">Existencias: {{pro.existencia}}</h4>
+                </div>
+
+            </div>
+            <div class="border-light text-center">
+            
+                <button type="button" class="btn btn-success" (click)="addcart(pro)" routerLink="/carrito">
+                    <i class="fas fa-shopping-cart"></i> Comprar
+                </button>
+            </div>
+        </div>
+
+    </ul>
+
+</div>

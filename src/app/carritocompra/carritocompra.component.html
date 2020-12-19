@@ -1,0 +1,14 @@
+<p>carritocompra works!</p>
+
+<br>
+<br>
+<button class="btn btn-danger" *ngIf="!showPaypalButtons"
+  (click)="pay()">Pagar con paypal</button>
+
+<div class="container text-center">
+<ngx-paypal *ngIf="showPaypalButtons" [config]="payPalConfig">
+</ngx-paypal>
+</div>
+<button class="btn btn-danger" *ngIf="showPaypalButtons" (click)="back()">Volver atras{{pal}}</button>
+
+
